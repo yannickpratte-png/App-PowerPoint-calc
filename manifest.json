@@ -1,0 +1,16 @@
+{
+  "name": "Calculs Électriques",
+  "short_name": "CalcÉlec",
+  "description": "Calculatrice d'ingénierie électrique : loi d'Ohm, puissance, triphasé, chute de tension et facteur de puissance.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

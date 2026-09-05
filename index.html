@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>Calculs Électriques</title>
+<meta name="description" content="Calculatrice d'ingénierie électrique pour iPad : loi d'Ohm, puissance, triphasé, chute de tension, facteur de puissance." />
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0f172a" />
+
+<!-- iOS home screen support -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CalcÉlec" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <div class="bolt">⚡</div>
+  <div>
+    <h1>Calculs Électriques</h1>
+    <p>Outils rapides pour ingénierie électrique</p>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="ohm" class="active">Ohm &amp; Puissance</button>
+  <button data-tab="triphase">Triphasé</button>
+  <button data-tab="chute">Chute de tension</button>
+  <button data-tab="fp">Facteur de puissance</button>
+</nav>
+
+<main>
+
+  <!-- PANEL: Ohm's law / power wheel -->
+  <section class="panel active" id="panel-ohm">
+    <div class="card">
+      <h2>Roue de calcul V / I / R / P</h2>
+      <p class="hint">Entre deux valeurs connues, les deux autres se calculent automatiquement.</p>
+
+      <div class="row2">
+        <div class="field">
+          <label>Tension <span class="unit">V</span></label>
+          <input type="number" inputmode="decimal" id="ohm-V" placeholder="—" />
+        </div>
+        <div class="field">
+          <label>Courant <span class="unit">A</span></label>
+          <input type="number" inputmode="decimal" id="ohm-I" placeholder="—" />
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Résistance <span class="unit">Ω</span></label>
+          <input type="number" inputmode="decimal" id="ohm-R" placeholder="—" />
+        </div>
+        <div class="field">
+          <label>Puissance <span class="unit">W</span></label>
+          <input type="number" inputmode="decimal" id="ohm-P" placeholder="—" />
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="reset" id="ohm-reset" type="button">Effacer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL: Three-phase -->
+  <section class="panel" id="panel-triphase">
+    <div class="card">
+      <h2>Puissance à partir de V, I et FP</h2>
+      <p class="hint">Tension entre phases (triphasé) ou tension d'alimentation (monophasé).</p>
+
+      <div class="field">
+        <label>Système</label>
+        <select id="tri-system">
+          <option value="tri">Triphasé (√3)</option>
+          <option value="mono">Monophasé</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Tension <span class="unit">V</span></label>
+          <input type="number" inputmode="decimal" id="tri-V" placeholder="ex: 600" />
+        </div>
+        <div class="field">
+          <label>Courant <span class="unit">A</span></label>
+          <input type="number" inputmode="decimal" id="tri-I" placeholder="ex: 50" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Facteur de puissance <span class="unit">0 à 1</span></label>
+        <input type="number" inputmode="decimal" id="tri-fp" placeholder="ex: 0.9" step="0.01" min="0" max="1" />
+      </div>
+
+      <div class="results">
+        <div class="result highlight"><div class="label">Puissance active</div><div class="value" id="tri-P">—</div></div>
+        <div class="result"><div class="label">Puissance apparente</div><div class="value" id="tri-S">—</div></div>
+        <div class="result"><div class="label">Puissance réactive</div><div class="value" id="tri-Q">—</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Courant à partir de P, V et FP</h2>
+      <p class="hint">Utile pour dimensionner un disjoncteur ou un conducteur à partir d'une charge en kW.</p>
+
+      <div class="field">
+        <label>Système</label>
+        <select id="tri2-system">
+          <option value="tri">Triphasé (√3)</option>
+          <option value="mono">Monophasé</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Puissance active <span class="unit">kW</span></label>
+          <input type="number" inputmode="decimal" id="tri2-P" placeholder="ex: 45" />
+        </div>
+        <div class="field">
+          <label>Tension <span class="unit">V</span></label>
+          <input type="number" inputmode="decimal" id="tri2-V" placeholder="ex: 600" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Facteur de puissance <span class="unit">0 à 1</span></label>
+        <input type="number" inputmode="decimal" id="tri2-fp" placeholder="ex: 0.9" step="0.01" min="0" max="1" />
+      </div>
+
+      <div class="results">
+        <div class="result highlight"><div class="label">Courant</div><div class="value" id="tri2-I">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL: Voltage drop -->
+  <section class="panel" id="panel-chute">
+    <div class="card">
+      <h2>Chute de tension &amp; dimensionnement</h2>
+      <p class="hint">Valeurs de résistance basées sur conducteur cuivre/aluminium non revêtu (tableau standard). À valider avec le code électrique applicable pour un projet réel.</p>
+
+      <div class="row2">
+        <div class="field">
+          <label>Système</label>
+          <select id="cv-system">
+            <option value="mono">Monophasé (aller-retour)</option>
+            <option value="tri">Triphasé (√3)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Matériau</label>
+          <select id="cv-material">
+            <option value="cu">Cuivre</option>
+            <option value="al">Aluminium</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Calibre du conducteur</label>
+        <select id="cv-awg"></select>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Longueur <span class="unit" id="cv-len-unit-label">m</span></label>
+          <input type="number" inputmode="decimal" id="cv-length" placeholder="ex: 30" />
+        </div>
+        <div class="field">
+          <label>Unité de longueur</label>
+          <select id="cv-len-unit">
+            <option value="m">Mètres</option>
+            <option value="ft">Pieds</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Courant de charge <span class="unit">A</span></label>
+          <input type="number" inputmode="decimal" id="cv-I" placeholder="ex: 30" />
+        </div>
+        <div class="field">
+          <label>Tension source <span class="unit">V</span></label>
+          <input type="number" inputmode="decimal" id="cv-V" placeholder="ex: 240" />
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result"><div class="label">Chute de tension</div><div class="value" id="cv-drop">—</div></div>
+        <div class="result" id="cv-pct-box"><div class="label">Chute en %</div><div class="value" id="cv-pct">—</div></div>
+        <div class="result"><div class="label">Tension à la charge</div><div class="value" id="cv-Vend">—</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANEL: Power factor correction -->
+  <section class="panel" id="panel-fp">
+    <div class="card">
+      <h2>Correction du facteur de puissance</h2>
+      <p class="hint">Calcule la puissance réactive de condensateurs (kVAR) requise pour améliorer le FP.</p>
+
+      <div class="field">
+        <label>Système</label>
+        <select id="fp-system">
+          <option value="tri">Triphasé (√3)</option>
+          <option value="mono">Monophasé</option>
+        </select>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Puissance active <span class="unit">kW</span></label>
+          <input type="number" inputmode="decimal" id="fp-P" placeholder="ex: 100" />
+        </div>
+        <div class="field">
+          <label>Tension <span class="unit">V</span></label>
+          <input type="number" inputmode="decimal" id="fp-V" placeholder="ex: 600" />
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>FP actuel <span class="unit">0 à 1</span></label>
+          <input type="number" inputmode="decimal" id="fp-current" placeholder="ex: 0.75" step="0.01" min="0" max="1" />
+        </div>
+        <div class="field">
+          <label>FP désiré <span class="unit">0 à 1</span></label>
+          <input type="number" inputmode="decimal" id="fp-target" placeholder="ex: 0.95" step="0.01" min="0" max="1" />
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result highlight"><div class="label">kVAR requis</div><div class="value" id="fp-kvar">—</div></div>
+        <div class="result"><div class="label">S avant</div><div class="value" id="fp-Sbefore">—</div></div>
+        <div class="result"><div class="label">S après</div><div class="value" id="fp-Safter">—</div></div>
+        <div class="result"><div class="label">I avant</div><div class="value" id="fp-Ibefore">—</div></div>
+        <div class="result"><div class="label">I après</div><div class="value" id="fp-Iafter">—</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Outils de calcul à titre indicatif — valider selon le code électrique en vigueur.</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
